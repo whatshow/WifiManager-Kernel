@@ -1,0 +1,9 @@
+#CLion文件夹
+#根目录下的.idea
+/.idea
+
+#CMake 中间文件
+#根目录下的cmake-build-debug
+/cmake-build-debug
+#根目录下的CMakeLists.txt
+/CMakeLists.txt

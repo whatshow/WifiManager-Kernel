@@ -1,4 +1,4 @@
-config WifiManager
+config WifiManager-Kernel
 	tristate "Just a example" 
 	default n
 	help

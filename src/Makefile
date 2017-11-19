@@ -1,1 +1,1 @@
-obj-m := WifiManager-Kernel.o
+obj-m  += WifiManager-Kernel.o

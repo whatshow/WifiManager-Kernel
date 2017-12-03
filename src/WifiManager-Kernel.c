@@ -5,17 +5,20 @@
 #include <linux/kernel.h>
 
 /*** 导入linux网络包 ***/
-#include <skbuff.h>
+#include <linux/skbuff.h>
 #include <linux/ip.h>
 
 /*** 导入netfilter框架 ***/
-#include <netinet/in.h>
+//#include <netinet/in.h>
+#include <linux/in.h>
 #include <linux/netfilter.h>
 #include <linux/netfilter_ipv4.h>
 
 /*** 文件操作 ***/
-#include <sys/stat.h>
-#include <sys/types.h>
+//#include <sys/stat.h>
+#include <linux/stat.h>
+//#include <sys/types.h>
+#include <linux/types.h>
 
 /* 钩子 */
 //注册的钩子

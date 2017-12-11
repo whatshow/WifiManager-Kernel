@@ -7,6 +7,8 @@
 /*** 导入linux网络包 ***/
 #include <linux/skbuff.h>
 #include <linux/ip.h>
+#include <linux/tcp.h>
+#include <linux/inet.h>
 
 /*** 导入netfilter框架 ***/
 //#include <netinet/in.h>
@@ -21,13 +23,50 @@
 #include <linux/types.h>
 
 /* 钩子 */
+/**
+ * 阻止默认IP访问的钩子
+ * 阻止访问 http://222.223.239.125
+ */
 //注册的钩子
 static struct nf_hook_ops nfhoForbidDefaultIP;
 //钩子回调函数
-unsigned int hf_ForbidDefaultIP(unsigned int hooknum, struct sk_buff *skb, const struct net_device *in, const struct net_device *out, int (*okfn)(struct sk_buff *))
+unsigned int hf_ForbidDefaultIP(
+        unsigned int hooknum,
+        struct sk_buff *skb,
+        const struct net_device *in,
+        const struct net_device *out,
+        int (*okfn)(struct sk_buff *)
+)
 {
-    printk(KERN_INFO "packet dropped\n");   //log to var/log/messages
-    return NF_DROP;                         //drops the packet
+    /* 临时变量 */
+    //ip报文头部
+    struct iphdr *iph;
+
+
+    //如果没有skb，直接返回
+    if (!skb){
+        return NF_ACCEPT;
+    }
+    //不是IP数据包，则直接返回（排除ARP干扰）
+    if(skb->protocol != htons(0x0800)){
+        return NF_ACCEPT;
+    }
+
+    //获取ip报文头部（ ip_hdr定义 #include <linux/ip.h> ）
+    iph = ip_hdr(skb);
+    //如果获取不到ip报文头，则直接结束
+    if(!iph){
+        return NF_ACCEPT;
+    }
+
+    //如果访问地址是222.223.239.125，则禁止
+    if(iph-> daddr == in_aton("222.223.239.125")){
+        printk(KERN_INFO "packet dropped\n");   //log to var/log/messages
+        return NF_DROP;                         //drops the packet
+    }
+
+    //其他报文则接受
+    return NF_ACCEPT;
 }
 
 
